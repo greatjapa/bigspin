@@ -1,11 +1,11 @@
 package com.skatepark.kickflip;
 
 /**
- * Created by moikawa on 4/25/16.
+ * @author Marcelo Oikawa
  */
 public class Main {
 
-    public static void main(String args[]){
+    public static void main(String args[]) {
         System.out.println("hello world");
     }
 }
