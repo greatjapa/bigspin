@@ -18,12 +18,9 @@ public class I18NTest {
     @Test
     public void test()throws IOException{
         ResourceBundle rb = ResourceBundle.getBundle("idiom", new Locale("pt", "BR"));
-        System.out.println(rb);
-        System.out.println(rb instanceof Serializable);
-        System.out.println(rb.getString("button"));
 
-        ObjectOutputStream o = new ObjectOutputStream(System.out);
-        o.writeObject(rb);
+        I18N i18n = new DefaultI18N(rb);
+        i18n.get("key", "defaultValue");
     }
 
 
