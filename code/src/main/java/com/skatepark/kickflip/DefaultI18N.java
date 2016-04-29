@@ -1,6 +1,7 @@
 package com.skatepark.kickflip;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -15,82 +16,80 @@ public class DefaultI18N implements I18N, Serializable {
 
     private Map<String, String> values;
 
+    private I18N parent;
+
     private Function<String, String> callback;
 
-    public DefaultI18N(ResourceBundle bundle){
-        this();
-        if (bundle == null){
-            throw new IllegalArgumentException("bundle can't be null.");
-        }
-        Enumeration<String> keys = bundle.getKeys();
-        while(keys.hasMoreElements()){
-            String key = (String)keys.nextElement();
-            String value = bundle.getString(key);
-            values.put(key, value);
-        }
+    public DefaultI18N(ResourceBundle bundle) {
+        this(bundle, null);
     }
 
-    private DefaultI18N(){
-        values = new HashMap<>();
+    public DefaultI18N(ResourceBundle bundle, I18N parent) {
+        this(bundle, parent, null);
+    }
+
+    public DefaultI18N(ResourceBundle bundle, I18N parent, Function<String, String> callback) {
+        this(toMap(bundle), parent, callback);
+    }
+
+    private DefaultI18N(Map<String, String> values, I18N parent, Function<String, String> callback) {
+        this.values = values;
+        this.parent = parent;
+        this.callback = callback != null ? callback : key -> "<<" + key + ">>";
     }
 
     @Override
     public String get(String key) {
-        return null;
-    }
-
-    @Override
-    public String get(Object object, String key) {
-        return null;
+        if (!has(key)) {
+            return callback.apply(key);
+        }
+        return values.get(key);
     }
 
     @Override
     public String get(String key, String... args) {
-        return null;
-    }
-
-    @Override
-    public String get(Object object, String key, String... args) {
-        return null;
+        if (!has(key)) {
+            return callback.apply(key);
+        }
+        return MessageFormat.format(values.get(key), args);
     }
 
     @Override
     public Set<String> keys() {
-        return null;
+        return values.keySet();
     }
 
     @Override
     public boolean has(String key) {
-        return false;
+        return values.containsKey(key);
     }
 
     @Override
     public void remove(String key) {
-
+        values.remove(key);
     }
 
     @Override
     public void put(String key, String value) {
-
+        values.put(key, value);
     }
 
     @Override
-    public void append(I18N i18n) {
-
+    public I18N getParent() {
+        return parent;
     }
 
-    @Override
-    public void append(ResourceBundle bundle) {
-
-    }
-
-    @Override
-    public void append(Map<String, String> values) {
-
-    }
-
-    @Override
-    public void append(Properties properties) {
-
+    private static Map<String, String> toMap(ResourceBundle bundle) {
+        if (bundle == null) {
+            throw new IllegalArgumentException("bundle can't be null.");
+        }
+        Map<String, String> values = new HashMap<>();
+        Enumeration<String> keys = bundle.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = (String) keys.nextElement();
+            String value = bundle.getString(key);
+            values.put(key, value);
+        }
+        return values;
     }
 }
