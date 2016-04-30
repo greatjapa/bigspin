@@ -13,6 +13,12 @@ public interface I18N {
 
     Set<String> keys();
 
+    Set<String> allKeys();
+
+    int size();
+
+    int total();
+
     boolean has(String key);
 
     void put(String key, String value);

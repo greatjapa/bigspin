@@ -5,8 +5,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -60,8 +62,27 @@ public class DefaultI18N implements I18N, Serializable {
     }
 
     @Override
+    public Set<String> allKeys() {
+        Set<String> allKeys = new HashSet(values.keySet());
+        if (parent != null) {
+            allKeys.addAll(parent.allKeys());
+        }
+        return allKeys;
+    }
+
+    @Override
+    public int size() {
+        return values.size();
+    }
+
+    @Override
+    public int total() {
+        return size() + (parent == null ? 0 : parent.total());
+    }
+
+    @Override
     public boolean has(String key) {
-        return values.containsKey(key);
+        return values.containsKey(key) || (parent != null && parent.has(key));
     }
 
     @Override
@@ -86,7 +107,7 @@ public class DefaultI18N implements I18N, Serializable {
         Map<String, String> values = new HashMap<>();
         Enumeration<String> keys = bundle.getKeys();
         while (keys.hasMoreElements()) {
-            String key = (String) keys.nextElement();
+            String key = keys.nextElement();
             String value = bundle.getString(key);
             values.put(key, value);
         }
