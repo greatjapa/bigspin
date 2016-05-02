@@ -49,13 +49,14 @@ public class DefaultI18NTest {
         Assert.assertTrue(baseI18N.has("no"));
         Assert.assertTrue(baseI18N.has("cancel"));
 
-        Assert.assertFalse(baseI18N.has("file"));
+        Assert.assertFalse(baseI18N.has("no.message"));
 
         Assert.assertTrue(guiI18N.has("ok"));
         Assert.assertTrue(guiI18N.has("no"));
         Assert.assertTrue(guiI18N.has("cancel"));
         Assert.assertTrue(guiI18N.has("file"));
         Assert.assertTrue(guiI18N.has("tools"));
+        Assert.assertTrue(guiI18N.has("rename"));
 
         Assert.assertFalse(guiI18N.has("no.message"));
     }
@@ -69,10 +70,10 @@ public class DefaultI18NTest {
         I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
 
         Assert.assertEquals(3, baseI18N.size());
-        Assert.assertEquals(2, guiI18N.size());
+        Assert.assertEquals(4, guiI18N.size());
 
         Assert.assertEquals(3, baseI18N.total());
-        Assert.assertEquals(5, guiI18N.total());
+        Assert.assertEquals(7, guiI18N.total());
     }
 
     @Test
@@ -84,7 +85,7 @@ public class DefaultI18NTest {
         I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
 
         Assert.assertEquals(3, baseI18N.total());
-        Assert.assertEquals(5, guiI18N.total());
+        Assert.assertEquals(7, guiI18N.total());
     }
 
     @Test
@@ -108,6 +109,7 @@ public class DefaultI18NTest {
         Assert.assertNotNull(guiKeys);
         Assert.assertTrue(guiKeys.contains("file"));
         Assert.assertTrue(guiKeys.contains("tools"));
+        Assert.assertTrue(guiKeys.contains("rename"));
         Assert.assertFalse(guiKeys.contains("no.message"));
     }
 
@@ -136,50 +138,31 @@ public class DefaultI18NTest {
         Assert.assertTrue(allKeys.contains("cancel"));
         Assert.assertTrue(allKeys.contains("file"));
         Assert.assertTrue(allKeys.contains("tools"));
+        Assert.assertTrue(allKeys.contains("rename"));
         Assert.assertFalse(allKeys.contains("no.message"));
     }
 
     @Test
-    public void testPut(){
+    public void testGet(){
         ResourceBundle baseBundle = ResourceBundle.getBundle(BASE_FILE, new Locale("pt", "BR"));
         ResourceBundle guiBundle = ResourceBundle.getBundle(GUI_FILE, new Locale("pt", "BR"));
 
         I18N baseI18N = new DefaultI18N(baseBundle);
         I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
 
-        Assert.assertEquals(3, baseI18N.total());
-        Assert.assertEquals(5, guiI18N.total());
-        Assert.assertFalse(guiI18N.has("edit"));
+        Assert.assertEquals("Ok", baseI18N.get("ok"));
+        Assert.assertEquals("Não", baseI18N.get("no"));
+        Assert.assertEquals("Cancelar", baseI18N.get("cancel"));
 
-        guiI18N.put("edit", "Editar");
+        Assert.assertEquals("Sim", guiI18N.get("ok"));
+        Assert.assertEquals("Não", guiI18N.get("no"));
+        Assert.assertEquals("Cancelar", guiI18N.get("cancel"));
+        Assert.assertEquals("Arquivo", guiI18N.get("file"));
+        Assert.assertEquals("Ferramentas", guiI18N.get("tools"));
 
-        Assert.assertEquals(3, baseI18N.total());
-        Assert.assertEquals(6, guiI18N.total());
-        Assert.assertTrue(guiI18N.has("edit"));
-        Assert.assertEquals("Editar", guiI18N.get("edit"));
+//        InputStream utf8in = getClass().getClassLoader().getResourceAsStream("/path/to/utf8.properties");
+//        Reader reader = new InputStreamReader(utf8in, "UTF-8");
+//        Properties props = new Properties();
+//        props.load(reader);
     }
-
-    @Test
-    public void testRemove(){
-        ResourceBundle baseBundle = ResourceBundle.getBundle(BASE_FILE, new Locale("pt", "BR"));
-        ResourceBundle guiBundle = ResourceBundle.getBundle(GUI_FILE, new Locale("pt", "BR"));
-
-        I18N baseI18N = new DefaultI18N(baseBundle);
-        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
-
-        Assert.assertEquals(3, baseI18N.total());
-        Assert.assertEquals(5, guiI18N.total());
-        Assert.assertTrue(guiI18N.has("file"));
-
-        guiI18N.remove("file");
-
-        Assert.assertEquals(3, baseI18N.total());
-        Assert.assertEquals(4, guiI18N.total());
-        Assert.assertFalse(guiI18N.has("file"));
-        Assert.assertEquals("<<file>>", guiI18N.get("file"));
-
-        //TODO testGet and getGet with format
-        //TODO implement get and get with format using parent
-    }
-
 }

@@ -21,9 +21,7 @@ public interface I18N {
 
     boolean has(String key);
 
-    void put(String key, String value);
-
-    void remove(String key);
+    //TODO put remove?
 
     I18N getParent();
 }

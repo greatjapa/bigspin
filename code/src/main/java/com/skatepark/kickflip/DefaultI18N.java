@@ -86,16 +86,6 @@ public class DefaultI18N implements I18N, Serializable {
     }
 
     @Override
-    public void remove(String key) {
-        values.remove(key);
-    }
-
-    @Override
-    public void put(String key, String value) {
-        values.put(key, value);
-    }
-
-    @Override
     public I18N getParent() {
         return parent;
     }
