@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class DefaultI18N implements I18N, Serializable {
 
@@ -32,6 +33,18 @@ public class DefaultI18N implements I18N, Serializable {
 
     public DefaultI18N(ResourceBundle bundle, I18N parent, Function<String, String> callback) {
         this(toMap(bundle), parent, callback);
+    }
+
+    public DefaultI18N(Properties props) {
+        this(props, null);
+    }
+
+    public DefaultI18N(Properties props, I18N parent) {
+        this(props, parent, null);
+    }
+
+    public DefaultI18N(Properties props, I18N parent, Function<String, String> callback) {
+        this(toMap(props), parent, callback);
     }
 
     private DefaultI18N(Map<String, String> values, I18N parent, Function<String, String> callback) {
@@ -88,6 +101,15 @@ public class DefaultI18N implements I18N, Serializable {
     @Override
     public I18N getParent() {
         return parent;
+    }
+
+    private static Map<String, String> toMap(Properties props) {
+        if (props == null){
+            throw new IllegalArgumentException("props can't be null.");
+        }
+        return props.entrySet().stream().collect(Collectors.toMap(
+                e -> String.valueOf(e.getKey()),
+                e -> String.valueOf(e.getValue())));
     }
 
     private static Map<String, String> toMap(ResourceBundle bundle) {
