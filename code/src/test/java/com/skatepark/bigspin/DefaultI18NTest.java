@@ -1,4 +1,4 @@
-package com.skatepark.kickflip;
+package com.skatepark.bigspin;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -6,10 +6,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;

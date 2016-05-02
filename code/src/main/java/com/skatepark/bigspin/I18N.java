@@ -1,8 +1,5 @@
-package com.skatepark.kickflip;
+package com.skatepark.bigspin;
 
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 public interface I18N {
