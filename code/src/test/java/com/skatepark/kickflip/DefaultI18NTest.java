@@ -4,9 +4,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -17,33 +21,33 @@ import java.util.Set;
  */
 public class DefaultI18NTest {
 
-    private static final String BASE_FILE = "base";
+    private static final String BASE_FILE = "base_en_US.properties";
 
-    private static final String GUI_FILE = "gui";
+    private static final String GUI_FILE = "gui_en_US.properties";
 
     @Test(expected = IllegalArgumentException.class)
     public void testResourceBundleNull(){
-        new DefaultI18N(null);
+        new DefaultI18N((ResourceBundle) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPropertiesNull(){
+        new DefaultI18N((Properties) null);
     }
 
     @Test
     public void testGetParent(){
-        ResourceBundle baseBundle = ResourceBundle.getBundle(BASE_FILE, new Locale("pt", "BR"));
+        I18N guiI18N = createI18N();
+        I18N baseI18N = guiI18N.getParent();
 
-        I18N first = new DefaultI18N(baseBundle);
-        I18N second = new DefaultI18N(baseBundle, first);
-
-        Assert.assertNull(first.getParent());
-        Assert.assertSame(first, second.getParent());
+        Assert.assertNull(baseI18N.getParent());
+        Assert.assertSame(baseI18N, guiI18N.getParent());
     }
 
     @Test
     public void testHas(){
-        ResourceBundle baseBundle = ResourceBundle.getBundle(BASE_FILE, new Locale("pt", "BR"));
-        ResourceBundle guiBundle = ResourceBundle.getBundle(GUI_FILE, new Locale("pt", "BR"));
-
-        I18N baseI18N = new DefaultI18N(baseBundle);
-        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
+        I18N guiI18N = createI18N();
+        I18N baseI18N = guiI18N.getParent();
 
         Assert.assertTrue(baseI18N.has("ok"));
         Assert.assertTrue(baseI18N.has("no"));
@@ -63,38 +67,29 @@ public class DefaultI18NTest {
 
     @Test
     public void testSize(){
-        ResourceBundle baseBundle = ResourceBundle.getBundle(BASE_FILE, new Locale("pt", "BR"));
-        ResourceBundle guiBundle = ResourceBundle.getBundle(GUI_FILE, new Locale("pt", "BR"));
+        I18N guiI18N = createI18N();
+        I18N baseI18N = guiI18N.getParent();
 
-        I18N baseI18N = new DefaultI18N(baseBundle);
-        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
 
-        Assert.assertEquals(3, baseI18N.size());
-        Assert.assertEquals(4, guiI18N.size());
-
-        Assert.assertEquals(3, baseI18N.total());
+        Assert.assertEquals(4, baseI18N.total());
         Assert.assertEquals(7, guiI18N.total());
     }
 
     @Test
     public void testTotal(){
-        ResourceBundle baseBundle = ResourceBundle.getBundle(BASE_FILE, new Locale("pt", "BR"));
-        ResourceBundle guiBundle = ResourceBundle.getBundle(GUI_FILE, new Locale("pt", "BR"));
+        I18N guiI18N = createI18N();
+        I18N baseI18N = guiI18N.getParent();
 
-        I18N baseI18N = new DefaultI18N(baseBundle);
-        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
-
-        Assert.assertEquals(3, baseI18N.total());
+        Assert.assertEquals(4, baseI18N.total());
         Assert.assertEquals(7, guiI18N.total());
     }
 
     @Test
     public void testKeys(){
-        ResourceBundle baseBundle = ResourceBundle.getBundle(BASE_FILE, new Locale("pt", "BR"));
-        ResourceBundle guiBundle = ResourceBundle.getBundle(GUI_FILE, new Locale("pt", "BR"));
-
-        I18N baseI18N = new DefaultI18N(baseBundle);
-        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
+        I18N guiI18N = createI18N();
+        I18N baseI18N = guiI18N.getParent();
 
         Set<String> baseKeys = baseI18N.keys();
 
@@ -102,6 +97,7 @@ public class DefaultI18NTest {
         Assert.assertTrue(baseKeys.contains("ok"));
         Assert.assertTrue(baseKeys.contains("no"));
         Assert.assertTrue(baseKeys.contains("cancel"));
+        Assert.assertTrue(baseKeys.contains("rename"));
         Assert.assertFalse(baseKeys.contains("no.message"));
 
         Set<String> guiKeys = guiI18N.keys();
@@ -109,17 +105,13 @@ public class DefaultI18NTest {
         Assert.assertNotNull(guiKeys);
         Assert.assertTrue(guiKeys.contains("file"));
         Assert.assertTrue(guiKeys.contains("tools"));
-        Assert.assertTrue(guiKeys.contains("rename"));
         Assert.assertFalse(guiKeys.contains("no.message"));
     }
 
     @Test
     public void testAllKeys(){
-        ResourceBundle baseBundle = ResourceBundle.getBundle(BASE_FILE, new Locale("pt", "BR"));
-        ResourceBundle guiBundle = ResourceBundle.getBundle(GUI_FILE, new Locale("pt", "BR"));
-
-        I18N baseI18N = new DefaultI18N(baseBundle);
-        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
+        I18N guiI18N = createI18N();
+        I18N baseI18N = guiI18N.getParent();
 
         Set<String> allBaseKeys = baseI18N.allKeys();
 
@@ -144,25 +136,46 @@ public class DefaultI18NTest {
 
     @Test
     public void testGet(){
-        ResourceBundle baseBundle = ResourceBundle.getBundle(BASE_FILE, new Locale("pt", "BR"));
-        ResourceBundle guiBundle = ResourceBundle.getBundle(GUI_FILE, new Locale("pt", "BR"));
-
-        I18N baseI18N = new DefaultI18N(baseBundle);
-        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
+        I18N guiI18N = createI18N();
+        I18N baseI18N = guiI18N.getParent();
 
         Assert.assertEquals("Ok", baseI18N.get("ok"));
-        Assert.assertEquals("Não", baseI18N.get("no"));
-        Assert.assertEquals("Cancelar", baseI18N.get("cancel"));
+        Assert.assertEquals("No", baseI18N.get("no"));
+        Assert.assertEquals("Cancel", baseI18N.get("cancel"));
 
-        Assert.assertEquals("Sim", guiI18N.get("ok"));
-        Assert.assertEquals("Não", guiI18N.get("no"));
-        Assert.assertEquals("Cancelar", guiI18N.get("cancel"));
-        Assert.assertEquals("Arquivo", guiI18N.get("file"));
-        Assert.assertEquals("Ferramentas", guiI18N.get("tools"));
+        Assert.assertEquals("Yes", guiI18N.get("ok"));
+        Assert.assertEquals("No", guiI18N.get("no"));
+        Assert.assertEquals("Cancel", guiI18N.get("cancel"));
+        Assert.assertEquals("File", guiI18N.get("file"));
+        Assert.assertEquals("Tools", guiI18N.get("tools"));
+    }
 
-//        InputStream utf8in = getClass().getClassLoader().getResourceAsStream("/path/to/utf8.properties");
-//        Reader reader = new InputStreamReader(utf8in, "UTF-8");
-//        Properties props = new Properties();
-//        props.load(reader);
+    @Test
+    public void testGetWithArgs(){
+        I18N guiI18N = createI18N();
+
+        Assert.assertEquals("Rename {0}", guiI18N.get("rename"));
+        Assert.assertEquals("Rename package", guiI18N.get("rename", "package"));
+    }
+
+    private I18N createI18N()  {
+        try {
+            InputStream baseStream = getClass().getClassLoader().getResourceAsStream(BASE_FILE);
+            InputStream guiStream = getClass().getClassLoader().getResourceAsStream(GUI_FILE);
+
+            Properties baseProps = new Properties();
+            baseProps.load(new InputStreamReader(baseStream, "UTF-8"));
+
+            Properties guiProps = new Properties();
+            guiProps.load(new InputStreamReader(guiStream, "UTF-8"));
+
+            I18N baseI18N = new DefaultI18N(baseProps);
+            I18N guiI18N = new DefaultI18N(guiProps, baseI18N);
+
+            return guiI18N;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

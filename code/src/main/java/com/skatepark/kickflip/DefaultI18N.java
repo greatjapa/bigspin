@@ -55,10 +55,7 @@ public class DefaultI18N implements I18N, Serializable {
 
     @Override
     public String get(String key) {
-        if (!has(key)) {
-            return callback.apply(key);
-        }
-        return values.get(key);
+        return get(key, null);
     }
 
     @Override
@@ -66,7 +63,12 @@ public class DefaultI18N implements I18N, Serializable {
         if (!has(key)) {
             return callback.apply(key);
         }
-        return MessageFormat.format(values.get(key), args);
+
+        String value = values.get(key);
+        if (value == null && parent != null) {
+            value = parent.get(key);
+        }
+        return args != null ? MessageFormat.format(value, args) : value;
     }
 
     @Override
@@ -104,7 +106,7 @@ public class DefaultI18N implements I18N, Serializable {
     }
 
     private static Map<String, String> toMap(Properties props) {
-        if (props == null){
+        if (props == null) {
             throw new IllegalArgumentException("props can't be null.");
         }
         return props.entrySet().stream().collect(Collectors.toMap(
