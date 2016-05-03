@@ -89,7 +89,7 @@ public class DefaultI18N implements I18N, Serializable {
 
     @Override
     public int total() {
-        return size() + (parent == null ? 0 : parent.total());
+        return allKeys().size();
     }
 
     @Override

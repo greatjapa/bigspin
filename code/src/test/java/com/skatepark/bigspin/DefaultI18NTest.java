@@ -77,7 +77,7 @@ public class DefaultI18NTest {
         Assert.assertEquals(3, guiI18N.size());
 
         Assert.assertEquals(4, baseI18N.total());
-        Assert.assertEquals(7, guiI18N.total());
+        Assert.assertEquals(6, guiI18N.total());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class DefaultI18NTest {
         I18N baseI18N = guiI18N.getParent();
 
         Assert.assertEquals(4, baseI18N.total());
-        Assert.assertEquals(7, guiI18N.total());
+        Assert.assertEquals(6, guiI18N.total());
     }
 
     @Test
