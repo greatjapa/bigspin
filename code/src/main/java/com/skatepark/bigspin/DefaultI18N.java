@@ -1,13 +1,14 @@
 package com.skatepark.bigspin;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -20,32 +21,31 @@ public class DefaultI18N implements I18N, Serializable {
 
     private Function<String, String> callback;
 
-    public DefaultI18N(ResourceBundle bundle) {
-        this(bundle, null);
+    public DefaultI18N(InputStream stream) throws IOException{
+        this(stream, null);
     }
 
-    public DefaultI18N(ResourceBundle bundle, I18N parent) {
-        this(bundle, parent, null);
+    public DefaultI18N(InputStream stream, I18N parent)throws IOException {
+        this(stream, parent, null);
     }
 
-    public DefaultI18N(ResourceBundle bundle, I18N parent, Function<String, String> callback) {
-        this(toMap(bundle), parent, callback);
+    public DefaultI18N(InputStream stream, I18N parent, Function<String, String> callback) throws IOException{
+        this(stream == null ? null : new InputStreamReader(stream), parent, callback);
     }
 
-    public DefaultI18N(Properties props) {
-        this(props, null);
+    public DefaultI18N(Reader reader) throws IOException{
+        this(reader, null);
     }
 
-    public DefaultI18N(Properties props, I18N parent) {
-        this(props, parent, null);
+    public DefaultI18N(Reader reader, I18N parent)throws IOException {
+        this(reader, parent, null);
     }
 
-    public DefaultI18N(Properties props, I18N parent, Function<String, String> callback) {
-        this(toMap(props), parent, callback);
-    }
-
-    private DefaultI18N(Map<String, String> values, I18N parent, Function<String, String> callback) {
-        this.values = values;
+    public DefaultI18N(Reader reader, I18N parent, Function<String, String> callback) throws IOException {
+        if (reader == null) {
+            throw new IllegalArgumentException("reader can't be null.");
+        }
+        this.values = toMap(reader);
         this.parent = parent;
         this.callback = callback != null ? callback : key -> "<<" + key + ">>";
     }
@@ -102,26 +102,11 @@ public class DefaultI18N implements I18N, Serializable {
         return parent;
     }
 
-    private static Map<String, String> toMap(Properties props) {
-        if (props == null) {
-            throw new IllegalArgumentException("props can't be null.");
-        }
+    private Map<String, String> toMap(Reader reader) throws IOException {
+        Properties props = new Properties();
+        props.load(reader);
         return props.entrySet().stream().collect(Collectors.toMap(
                 e -> String.valueOf(e.getKey()),
                 e -> String.valueOf(e.getValue())));
-    }
-
-    private static Map<String, String> toMap(ResourceBundle bundle) {
-        if (bundle == null) {
-            throw new IllegalArgumentException("bundle can't be null.");
-        }
-        Map<String, String> values = new HashMap<>();
-        Enumeration<String> keys = bundle.getKeys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            String value = bundle.getString(key);
-            values.put(key, value);
-        }
-        return values;
     }
 }

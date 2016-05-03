@@ -17,8 +17,6 @@ public interface I18N {
     int total();
 
     boolean has(String key);
-
-    //TODO put remove?
-
+    
     I18N getParent();
 }

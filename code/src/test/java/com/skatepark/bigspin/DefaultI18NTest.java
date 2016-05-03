@@ -6,8 +6,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.io.Reader;
 import java.util.Set;
 
 /**
@@ -22,17 +21,25 @@ public class DefaultI18NTest {
     private static final String GUI_FILE = "gui_en_US.properties";
 
     @Test(expected = IllegalArgumentException.class)
-    public void testResourceBundleNull(){
-        new DefaultI18N((ResourceBundle) null);
+    public void testResourceBundleNull() {
+        try {
+            new DefaultI18N((InputStream) null);
+        } catch (IOException e) {
+            Assert.fail();
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testPropertiesNull(){
-        new DefaultI18N((Properties) null);
+    public void testPropertiesNull() {
+        try {
+            new DefaultI18N((Reader) null);
+        } catch (IOException e) {
+            Assert.fail();
+        }
     }
 
     @Test
-    public void testGetParent(){
+    public void testGetParent() {
         I18N guiI18N = createI18N();
         I18N baseI18N = guiI18N.getParent();
 
@@ -41,7 +48,7 @@ public class DefaultI18NTest {
     }
 
     @Test
-    public void testHas(){
+    public void testHas() {
         I18N guiI18N = createI18N();
         I18N baseI18N = guiI18N.getParent();
 
@@ -62,7 +69,7 @@ public class DefaultI18NTest {
     }
 
     @Test
-    public void testSize(){
+    public void testSize() {
         I18N guiI18N = createI18N();
         I18N baseI18N = guiI18N.getParent();
 
@@ -74,7 +81,7 @@ public class DefaultI18NTest {
     }
 
     @Test
-    public void testTotal(){
+    public void testTotal() {
         I18N guiI18N = createI18N();
         I18N baseI18N = guiI18N.getParent();
 
@@ -83,7 +90,7 @@ public class DefaultI18NTest {
     }
 
     @Test
-    public void testKeys(){
+    public void testKeys() {
         I18N guiI18N = createI18N();
         I18N baseI18N = guiI18N.getParent();
 
@@ -105,7 +112,7 @@ public class DefaultI18NTest {
     }
 
     @Test
-    public void testAllKeys(){
+    public void testAllKeys() {
         I18N guiI18N = createI18N();
         I18N baseI18N = guiI18N.getParent();
 
@@ -131,7 +138,7 @@ public class DefaultI18NTest {
     }
 
     @Test
-    public void testGet(){
+    public void testGet() {
         I18N guiI18N = createI18N();
         I18N baseI18N = guiI18N.getParent();
 
@@ -147,26 +154,20 @@ public class DefaultI18NTest {
     }
 
     @Test
-    public void testGetWithArgs(){
+    public void testGetWithArgs() {
         I18N guiI18N = createI18N();
 
         Assert.assertEquals("Rename {0}", guiI18N.get("rename"));
         Assert.assertEquals("Rename package", guiI18N.get("rename", "package"));
     }
 
-    private I18N createI18N()  {
+    private I18N createI18N() {
         try {
             InputStream baseStream = getClass().getClassLoader().getResourceAsStream(BASE_FILE);
             InputStream guiStream = getClass().getClassLoader().getResourceAsStream(GUI_FILE);
 
-            Properties baseProps = new Properties();
-            baseProps.load(new InputStreamReader(baseStream, "UTF-8"));
-
-            Properties guiProps = new Properties();
-            guiProps.load(new InputStreamReader(guiStream, "UTF-8"));
-
-            I18N baseI18N = new DefaultI18N(baseProps);
-            I18N guiI18N = new DefaultI18N(guiProps, baseI18N);
+            I18N baseI18N = new DefaultI18N(new InputStreamReader(baseStream, "UTF-8"));
+            I18N guiI18N = new DefaultI18N(new InputStreamReader(guiStream, "UTF-8"), baseI18N);
 
             return guiI18N;
         } catch (IOException e) {
