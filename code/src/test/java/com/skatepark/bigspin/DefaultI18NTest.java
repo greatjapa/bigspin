@@ -167,9 +167,7 @@ public class DefaultI18NTest {
             InputStream guiStream = getClass().getClassLoader().getResourceAsStream(GUI_FILE);
 
             I18N baseI18N = new DefaultI18N(new InputStreamReader(baseStream, "UTF-8"));
-            I18N guiI18N = new DefaultI18N(new InputStreamReader(guiStream, "UTF-8"), baseI18N);
-
-            return guiI18N;
+            return new DefaultI18N(new InputStreamReader(guiStream, "UTF-8"), baseI18N);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

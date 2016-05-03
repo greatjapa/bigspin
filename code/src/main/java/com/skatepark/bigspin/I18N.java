@@ -17,6 +17,6 @@ public interface I18N {
     int total();
 
     boolean has(String key);
-    
+
     I18N getParent();
 }
