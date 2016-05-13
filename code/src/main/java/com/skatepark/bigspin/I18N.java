@@ -14,7 +14,6 @@ import java.util.Set;
  * if it's desired.
  *
  * @author Marcelo Oikawa
- *
  * @see DefaultI18N
  */
 public interface I18N {
