@@ -13,34 +13,98 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A basic implementation of {@link I18N} interface.
+ *
+ * This object keeps all messages in-memory and it's {@link java.io.Serializable}, so you can send
+ * to another VM, share this object with multiple distributed modules, etc. Instances may also
+ * defines an optional parent and build an hierarchical mechanism to internationalize your
+ * messages.
+ *
+ * If there isn't an message mapped by given key, this object returns a 'fallback message' built by
+ * a callback optionally defined on construction.
+ *
+ * @author Marcelo Oikawa
+ */
 public class DefaultI18N implements I18N, Serializable {
 
+    /**
+     * Map with internationalized messages mapped by keys.
+     */
     private Map<String, String> values;
 
+    /**
+     * An optional parent.
+     */
     private I18N parent;
 
+    /**
+     * Callback used to build a message not found.
+     */
     private Function<String, String> callback;
 
-    public DefaultI18N(InputStream stream) throws IOException{
+    /**
+     * Constructs an {@link I18N} object with the stream content.
+     *
+     * @param stream stream.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(InputStream stream) throws IOException {
         this(stream, null);
     }
 
-    public DefaultI18N(InputStream stream, I18N parent)throws IOException {
+    /**
+     * Constructs an {@link I18N} object with the stream content.
+     *
+     * @param stream stream.
+     * @param parent parent.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(InputStream stream, I18N parent) throws IOException {
         this(stream, parent, null);
     }
 
-    public DefaultI18N(InputStream stream, I18N parent, Function<String, String> callback) throws IOException{
+    /**
+     * Constructs an {@link I18N} object with the stream content.
+     *
+     * @param stream   stream.
+     * @param parent   parent.
+     * @param callback callback used to build a message not found.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(InputStream stream, I18N parent, Function<String, String> callback) throws IOException {
         this(stream == null ? null : new InputStreamReader(stream), parent, callback);
     }
 
-    public DefaultI18N(Reader reader) throws IOException{
+    /**
+     * Constructs an {@link I18N} object with the reader content.
+     *
+     * @param reader reader.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(Reader reader) throws IOException {
         this(reader, null);
     }
 
-    public DefaultI18N(Reader reader, I18N parent)throws IOException {
+    /**
+     * Constructs an {@link I18N} object with the reader content.
+     *
+     * @param reader reader.
+     * @param parent parent.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(Reader reader, I18N parent) throws IOException {
         this(reader, parent, null);
     }
 
+    /**
+     * Constructs an {@link I18N} object with the reader content.
+     *
+     * @param reader   reader.
+     * @param parent   parent.
+     * @param callback callback used to build a message not found.
+     * @throws IOException If an input/output exception occur.
+     */
     public DefaultI18N(Reader reader, I18N parent, Function<String, String> callback) throws IOException {
         if (reader == null) {
             throw new IllegalArgumentException("reader can't be null.");
@@ -102,6 +166,13 @@ public class DefaultI18N implements I18N, Serializable {
         return parent;
     }
 
+    /**
+     * Read all {@link Reader} content and build a map with internationalized messages.
+     *
+     * @param reader reader.
+     * @return map with internationalized messages.
+     * @throws IOException If an input/output exception occur.
+     */
     private Map<String, String> toMap(Reader reader) throws IOException {
         Properties props = new Properties();
         props.load(reader);
