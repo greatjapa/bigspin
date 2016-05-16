@@ -1,5 +1,7 @@
 package com.skatepark.bigspin;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,6 +44,72 @@ public class DefaultI18N implements I18N, Serializable {
      * Callback used to build a message not found.
      */
     private Function<String, String> callback;
+
+    /**
+     * Constructs an {@link I18N} object with the file content.
+     *
+     * @param filePath path to file.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(String filePath) throws IOException {
+        this(filePath, null, null);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with the file content.
+     *
+     * @param filePath path to file.
+     * @param parent   parent.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(String filePath, I18N parent) throws IOException {
+        this(filePath, parent, null);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with the file content.
+     *
+     * @param filePath path to file.
+     * @param parent   parent.
+     * @param callback callback used to build a message not found.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(String filePath, I18N parent, Function<String, String> callback) throws IOException {
+        this(filePath == null ? null : new File(filePath), parent, callback);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with the file content.
+     *
+     * @param file file.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(File file) throws IOException {
+        this(file, null);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with the file content.
+     *
+     * @param file   file.
+     * @param parent parent.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(File file, I18N parent) throws IOException {
+        this(file, parent, null);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with the file content.
+     *
+     * @param file     file.
+     * @param parent   parent.
+     * @param callback callback used to build a message not found.
+     * @throws IOException If an input/output exception occur.
+     */
+    public DefaultI18N(File file, I18N parent, Function<String, String> callback) throws IOException {
+        this(file == null ? null : new FileInputStream(file), parent, callback);
+    }
 
     /**
      * Constructs an {@link I18N} object with the stream content.
