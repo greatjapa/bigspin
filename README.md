@@ -11,7 +11,7 @@ Most of well-known internationalization tools are property-file based, as [Resou
 - DefaultI18N is Serializable;
 - I18N is extensible because you can provide your custom implementation for `I18N` interface, for instance, load messages from Database, caching, etc;
 - You can build a hierarchical set of `I18N` instances to reuse and redefine some messages;
-- You can define a callback to manage missing resources (ResourceBundle throws [MissingResourceException](https://docs.oracle.com/javase/8/docs/api/java/util/MissingResourceException.html)
+- You can define a callback to manage missing resources (ResourceBundle throws [MissingResourceException](https://docs.oracle.com/javase/8/docs/api/java/util/MissingResourceException.html))
 
 ```Java
 I18N i18n = new DefaultI18N("base_en_US.properties");
