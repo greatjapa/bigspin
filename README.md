@@ -38,4 +38,4 @@ If your messages comes from a DB instead of property files, you can make your ow
 
 ## License
 
-Created by and copyright GitHub, Inc. Released under the [Apache license](LICENSE).
+Created by and copyright GitHub, Inc. Released under the [MIT license](LICENSE).
