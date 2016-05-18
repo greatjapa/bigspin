@@ -1,6 +1,6 @@
 # Bigspin 
 
-Simple, compact and extensible mechanism to load/get intenationalized messages in Java. This library defines a common interface `I18N` and provides a default implementation based on properties files, `DefaultI18N`. 
+Simple, compact and extensible mechanism to load/get intenationalized messages for Java. This library defines a common interface `I18N` and provides a default implementation based on properties files, `DefaultI18N`. 
 
 #### Why should I use I18N instead of ResourceBundle properly?
 
