@@ -22,7 +22,7 @@ I18N i18n = new DefaultI18N("base_en_US.properties");
 String okText = i18n.get("ok"); // okText = Yes 
 ```
 
-Reusing messages stored in a different files by creating a hierarchical set of `I18N` objects:
+Reusing messages stored in different files by creating a hierarchical set of `I18N` objects:
 
 ```Java
 //create a hierarchical I18N
