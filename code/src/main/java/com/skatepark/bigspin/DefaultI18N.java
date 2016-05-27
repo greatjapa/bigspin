@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -75,7 +76,7 @@ public class DefaultI18N implements I18N, Serializable {
      * @throws IOException If an input/output exception occur.
      */
     public DefaultI18N(String filePath, I18N parent, Function<String, String> callback) throws IOException {
-        this(filePath == null ? null : new File(filePath), parent, callback);
+        this(Objects.isNull(filePath) ? null : new File(filePath), parent, callback);
     }
 
     /**
@@ -108,7 +109,7 @@ public class DefaultI18N implements I18N, Serializable {
      * @throws IOException If an input/output exception occur.
      */
     public DefaultI18N(File file, I18N parent, Function<String, String> callback) throws IOException {
-        this(file == null ? null : new FileInputStream(file), parent, callback);
+        this(Objects.isNull(file) ? null : new FileInputStream(file), parent, callback);
     }
 
     /**
@@ -141,7 +142,7 @@ public class DefaultI18N implements I18N, Serializable {
      * @throws IOException If an input/output exception occur.
      */
     public DefaultI18N(InputStream stream, I18N parent, Function<String, String> callback) throws IOException {
-        this(stream == null ? null : new InputStreamReader(stream), parent, callback);
+        this(Objects.isNull(stream) ? null : new InputStreamReader(stream), parent, callback);
     }
 
     /**
@@ -174,9 +175,8 @@ public class DefaultI18N implements I18N, Serializable {
      * @throws IOException If an input/output exception occur.
      */
     public DefaultI18N(Reader reader, I18N parent, Function<String, String> callback) throws IOException {
-        if (reader == null) {
-            throw new IllegalArgumentException("reader can't be null.");
-        }
+        Objects.requireNonNull(reader, "reader can't be null.");
+
         this.values = toMap(reader);
         this.parent = parent;
         this.callback = callback != null ? callback : key -> "<<" + key + ">>";
