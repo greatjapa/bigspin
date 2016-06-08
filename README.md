@@ -1,5 +1,7 @@
 # Bigspin 
 
+[![Build Status](https://travis-ci.org/greatjapa/bigspin.svg?branch=master)](https://travis-ci.org/greatjapa/bigspin)
+
 A simple, compact and extensible mechanism to load/get internationalized messages for Java. This library defines a common interface `I18N` and provides a default implementation based on a property file `DefaultI18N`. 
 
 #### Why should I use I18N instead of ResourceBundle?
