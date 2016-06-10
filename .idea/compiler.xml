@@ -22,13 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="code" />
-        <module name="main" />
+        <module name="com.skatepark.bigspin" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="code" target="1.8" />
-      <module name="main" target="1.5" />
+      <module name="com.skatepark.bigspin" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
