@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class DefaultI18N implements I18N, Serializable {
 
     /**
-     * Map with internationalized messages mapped by keys.
+     * Map with internationalized messages.
      */
     private Map<String, String> values;
 

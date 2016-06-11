@@ -54,6 +54,73 @@ public class DefaultI18NTest {
     }
 
     @Test
+    public void testStringConstructors() {
+        I18N baseI18N = new DefaultI18N(BASE_FILE_PATH);
+        I18N guiI18N = new DefaultI18N(GUI_FILE_PATH, baseI18N);
+
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
+    }
+
+    @Test
+    public void testFileConstructors() {
+        I18N baseI18N = new DefaultI18N(new File(BASE_FILE_PATH));
+        I18N guiI18N = new DefaultI18N(new File(GUI_FILE_PATH), baseI18N);
+
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
+    }
+
+    @Test
+    public void testInputStreamConstructors() {
+        InputStream baseStream = getClass().getClassLoader().getResourceAsStream(BASE_FILE);
+        InputStream guiStream = getClass().getClassLoader().getResourceAsStream(GUI_FILE);
+
+        I18N baseI18N = new DefaultI18N(baseStream);
+        I18N guiI18N = new DefaultI18N(guiStream, baseI18N);
+
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
+    }
+
+    @Test
+    public void testResourceBundleConstructors() {
+        ResourceBundle baseBundle = ResourceBundle.getBundle("base", Locale.US);
+        ResourceBundle guiBundle = ResourceBundle.getBundle("gui", Locale.US);
+
+        I18N baseI18N = new DefaultI18N(baseBundle);
+        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
+
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
+    }
+
+    @Test
+    public void testMapConstructors() {
+        Map<String, String> baseMap = new HashMap<>();
+        baseMap.put("cancel", "Cancel");
+        baseMap.put("no", "No");
+        baseMap.put("ok", "Ok");
+        baseMap.put("rename", "Rename {0}");
+
+        Map<String, String> guiMap = new HashMap<>();
+        guiMap.put("file", "File");
+        guiMap.put("ok", "Yes");
+        guiMap.put("tools", "Tools");
+
+        I18N baseI18N = new DefaultI18N(baseMap);
+        I18N guiI18N = new DefaultI18N(guiMap, baseI18N);
+
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
+    }
+
+    @Test
     public void testGetParent() {
         I18N guiI18N = createI18N();
         I18N baseI18N = guiI18N.getParent();
@@ -183,72 +250,6 @@ public class DefaultI18NTest {
         Assert.assertEquals("<<toggle>>", guiI18N.get("toggle"));
     }
 
-    @Test
-    public void testStringConstructors() {
-        I18N baseI18N = new DefaultI18N(BASE_FILE_PATH);
-        I18N guiI18N = new DefaultI18N(GUI_FILE_PATH, baseI18N);
-
-        Assert.assertEquals(4, baseI18N.size());
-        Assert.assertEquals(3, guiI18N.size());
-        Assert.assertEquals(6, guiI18N.total());
-    }
-
-    @Test
-    public void testFileConstructors() {
-        I18N baseI18N = new DefaultI18N(new File(BASE_FILE_PATH));
-        I18N guiI18N = new DefaultI18N(new File(GUI_FILE_PATH), baseI18N);
-
-        Assert.assertEquals(4, baseI18N.size());
-        Assert.assertEquals(3, guiI18N.size());
-        Assert.assertEquals(6, guiI18N.total());
-    }
-
-    @Test
-    public void testInputStreamConstructors() {
-        InputStream baseStream = getClass().getClassLoader().getResourceAsStream(BASE_FILE);
-        InputStream guiStream = getClass().getClassLoader().getResourceAsStream(GUI_FILE);
-
-        I18N baseI18N = new DefaultI18N(baseStream);
-        I18N guiI18N = new DefaultI18N(guiStream, baseI18N);
-
-        Assert.assertEquals(4, baseI18N.size());
-        Assert.assertEquals(3, guiI18N.size());
-        Assert.assertEquals(6, guiI18N.total());
-    }
-
-    @Test
-    public void testResourceBundleConstructors() {
-        ResourceBundle baseBundle = ResourceBundle.getBundle("base", Locale.US);
-        ResourceBundle guiBundle = ResourceBundle.getBundle("gui", Locale.US);
-
-        I18N baseI18N = new DefaultI18N(baseBundle);
-        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
-
-        Assert.assertEquals(4, baseI18N.size());
-        Assert.assertEquals(3, guiI18N.size());
-        Assert.assertEquals(6, guiI18N.total());
-    }
-
-    @Test
-    public void testMapConstructors() {
-        Map<String, String> baseMap = new HashMap<>();
-        baseMap.put("cancel", "Cancel");
-        baseMap.put("no", "No");
-        baseMap.put("ok", "Ok");
-        baseMap.put("rename", "Rename {0}");
-
-        Map<String, String> guiMap = new HashMap<>();
-        guiMap.put("file", "File");
-        guiMap.put("ok", "Yes");
-        guiMap.put("tools", "Tools");
-
-        I18N baseI18N = new DefaultI18N(baseMap);
-        I18N guiI18N = new DefaultI18N(guiMap, baseI18N);
-
-        Assert.assertEquals(4, baseI18N.size());
-        Assert.assertEquals(3, guiI18N.size());
-        Assert.assertEquals(6, guiI18N.total());
-    }
 
     private I18N createI18N() {
         try {
