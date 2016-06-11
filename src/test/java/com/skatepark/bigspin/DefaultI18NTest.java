@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
@@ -192,17 +194,26 @@ public class DefaultI18NTest {
         I18N fromBaseStream = new DefaultI18N(baseStream);
         I18N fromGuiStream = new DefaultI18N(guiStream, fromBaseFilePath);
 
+        ResourceBundle baseBundle = ResourceBundle.getBundle("base", Locale.US);
+        ResourceBundle guiBundle = ResourceBundle.getBundle("gui", Locale.US);
+
+        I18N fromBaseBundle = new DefaultI18N(baseBundle);
+        I18N fromGuiBundle = new DefaultI18N(guiBundle, fromBaseFilePath);
+
         Assert.assertEquals(4, fromBaseFilePath.size());
         Assert.assertEquals(4, fromBaseFile.size());
         Assert.assertEquals(4, fromBaseStream.size());
+        Assert.assertEquals(4, fromBaseBundle.size());
 
         Assert.assertEquals(3, fromGuiFilePath.size());
         Assert.assertEquals(3, fromGuiFile.size());
         Assert.assertEquals(3, fromGuiStream.size());
+        Assert.assertEquals(3, fromGuiBundle.size());
 
         Assert.assertEquals(6, fromGuiFilePath.total());
         Assert.assertEquals(6, fromGuiFile.total());
         Assert.assertEquals(6, fromGuiStream.total());
+        Assert.assertEquals(6, fromGuiBundle.total());
     }
 
     private I18N createI18N() {
