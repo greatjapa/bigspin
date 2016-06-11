@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -22,6 +24,10 @@ public class DefaultI18NTest {
     private static final String BASE_FILE = "base_en_US.properties";
 
     private static final String GUI_FILE = "gui_en_US.properties";
+
+    private static final String BASE_FILE_PATH = "target/test-classes/base_en_US.properties";
+
+    private static final String GUI_FILE_PATH = "target/test-classes/gui_en_US.properties";
 
     @Test(expected = NullPointerException.class)
     public void testStringPathNull() {
@@ -178,42 +184,70 @@ public class DefaultI18NTest {
     }
 
     @Test
-    public void testConstructors() {
-        String baseFilePath = "target/test-classes/base_en_US.properties";
-        String guiFilePath = "target/test-classes/gui_en_US.properties";
+    public void testStringConstructors() {
+        I18N baseI18N = new DefaultI18N(BASE_FILE_PATH);
+        I18N guiI18N = new DefaultI18N(GUI_FILE_PATH, baseI18N);
 
-        I18N fromBaseFilePath = new DefaultI18N(baseFilePath);
-        I18N fromGuiFilePath = new DefaultI18N(guiFilePath, fromBaseFilePath);
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
+    }
 
-        I18N fromBaseFile = new DefaultI18N(new File(baseFilePath));
-        I18N fromGuiFile = new DefaultI18N(new File(guiFilePath), fromBaseFilePath);
+    @Test
+    public void testFileConstructors() {
+        I18N baseI18N = new DefaultI18N(new File(BASE_FILE_PATH));
+        I18N guiI18N = new DefaultI18N(new File(GUI_FILE_PATH), baseI18N);
 
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
+    }
+
+    @Test
+    public void testInputStreamConstructors() {
         InputStream baseStream = getClass().getClassLoader().getResourceAsStream(BASE_FILE);
         InputStream guiStream = getClass().getClassLoader().getResourceAsStream(GUI_FILE);
 
-        I18N fromBaseStream = new DefaultI18N(baseStream);
-        I18N fromGuiStream = new DefaultI18N(guiStream, fromBaseFilePath);
+        I18N baseI18N = new DefaultI18N(baseStream);
+        I18N guiI18N = new DefaultI18N(guiStream, baseI18N);
 
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
+    }
+
+    @Test
+    public void testResourceBundleConstructors() {
         ResourceBundle baseBundle = ResourceBundle.getBundle("base", Locale.US);
         ResourceBundle guiBundle = ResourceBundle.getBundle("gui", Locale.US);
 
-        I18N fromBaseBundle = new DefaultI18N(baseBundle);
-        I18N fromGuiBundle = new DefaultI18N(guiBundle, fromBaseFilePath);
+        I18N baseI18N = new DefaultI18N(baseBundle);
+        I18N guiI18N = new DefaultI18N(guiBundle, baseI18N);
 
-        Assert.assertEquals(4, fromBaseFilePath.size());
-        Assert.assertEquals(4, fromBaseFile.size());
-        Assert.assertEquals(4, fromBaseStream.size());
-        Assert.assertEquals(4, fromBaseBundle.size());
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
+    }
 
-        Assert.assertEquals(3, fromGuiFilePath.size());
-        Assert.assertEquals(3, fromGuiFile.size());
-        Assert.assertEquals(3, fromGuiStream.size());
-        Assert.assertEquals(3, fromGuiBundle.size());
+    @Test
+    public void testMapConstructors() {
+        Map<String, String> baseMap = new HashMap<>();
+        baseMap.put("cancel", "Cancel");
+        baseMap.put("no", "No");
+        baseMap.put("ok", "Ok");
+        baseMap.put("rename", "Rename {0}");
 
-        Assert.assertEquals(6, fromGuiFilePath.total());
-        Assert.assertEquals(6, fromGuiFile.total());
-        Assert.assertEquals(6, fromGuiStream.total());
-        Assert.assertEquals(6, fromGuiBundle.total());
+        Map<String, String> guiMap = new HashMap<>();
+        guiMap.put("file", "File");
+        guiMap.put("ok", "Yes");
+        guiMap.put("tools", "Tools");
+
+        I18N baseI18N = new DefaultI18N(baseMap);
+        I18N guiI18N = new DefaultI18N(guiMap, baseI18N);
+
+        Assert.assertEquals(4, baseI18N.size());
+        Assert.assertEquals(3, guiI18N.size());
+        Assert.assertEquals(6, guiI18N.total());
     }
 
     private I18N createI18N() {
@@ -221,8 +255,11 @@ public class DefaultI18NTest {
             InputStream baseStream = getClass().getClassLoader().getResourceAsStream(BASE_FILE);
             InputStream guiStream = getClass().getClassLoader().getResourceAsStream(GUI_FILE);
 
-            I18N baseI18N = new DefaultI18N(new InputStreamReader(baseStream, "UTF-8"));
-            return new DefaultI18N(new InputStreamReader(guiStream, "UTF-8"), baseI18N, key -> "<<" + key + ">>");
+            Reader baseReader = new InputStreamReader(baseStream, "UTF-8");
+            Reader guiReader = new InputStreamReader(guiStream, "UTF-8");
+
+            I18N baseI18N = new DefaultI18N(baseReader);
+            return new DefaultI18N(guiReader, baseI18N, key -> "<<" + key + ">>");
         } catch (IOException e) {
             e.printStackTrace();
             return null;
