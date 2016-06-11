@@ -3,6 +3,7 @@ package com.skatepark.bigspin;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -167,7 +168,7 @@ public class DefaultI18NTest {
             InputStream guiStream = getClass().getClassLoader().getResourceAsStream(GUI_FILE);
 
             I18N baseI18N = new DefaultI18N(new InputStreamReader(baseStream, "UTF-8"));
-            return new DefaultI18N(new InputStreamReader(guiStream, "UTF-8"), baseI18N);
+            return new DefaultI18N(new InputStreamReader(guiStream, "UTF-8"), baseI18N, key -> "<<" + key + ">>");
         } catch (IOException e) {
             e.printStackTrace();
             return null;
