@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/greatjapa/bigspin.svg?branch=master)](https://travis-ci.org/greatjapa/bigspin)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/greatjapa/bigspin/blob/master/LICENSE)
+[![codecov](https://codecov.io/gh/greatjapa/bigspin/branch/master/graph/badge.svg)](https://codecov.io/gh/greatjapa/bigspin)
 
 A simple, compact and extensible mechanism to load/get internationalized messages for Java. This library defines a common interface `I18N` and provides a default implementation based on a property file `DefaultI18N`. 
 
