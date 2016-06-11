@@ -22,7 +22,25 @@ public class DefaultI18NTest {
     private static final String GUI_FILE = "gui_en_US.properties";
 
     @Test(expected = NullPointerException.class)
-    public void testResourceBundleNull() {
+    public void testStringPathNull() {
+        try {
+            new DefaultI18N((String) null);
+        } catch (IOException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testFileNull() {
+        try {
+            new DefaultI18N((File) null);
+        } catch (IOException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testInputStreamNull() {
         try {
             new DefaultI18N((InputStream) null);
         } catch (IOException e) {
@@ -31,7 +49,7 @@ public class DefaultI18NTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testPropertiesNull() {
+    public void testReaderNull() {
         try {
             new DefaultI18N((Reader) null);
         } catch (IOException e) {

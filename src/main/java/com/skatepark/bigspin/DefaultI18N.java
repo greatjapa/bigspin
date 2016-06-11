@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * defines an optional parent and build an hierarchical mechanism to internationalize your
  * messages.
  *
- * If there isn't an message mapped by given key, this object returns a 'fallback message' built by
+ * If there isn't an message mapped by given key, this object returns a 'callback message' built by
  * a callback optionally defined on construction.
  *
  * @author Marcelo Oikawa
