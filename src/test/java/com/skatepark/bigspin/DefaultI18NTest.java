@@ -162,6 +162,13 @@ public class DefaultI18NTest {
         Assert.assertEquals("Rename package", guiI18N.get("rename", "package"));
     }
 
+    @Test
+    public void testGetCallback() {
+        I18N guiI18N = createI18N();
+
+        Assert.assertEquals("<<toggle>>", guiI18N.get("toggle"));
+    }
+
     private I18N createI18N() {
         try {
             InputStream baseStream = getClass().getClassLoader().getResourceAsStream(BASE_FILE);
