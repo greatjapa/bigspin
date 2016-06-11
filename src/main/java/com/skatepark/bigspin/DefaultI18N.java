@@ -179,7 +179,7 @@ public class DefaultI18N implements I18N, Serializable {
 
         this.values = toMap(reader);
         this.parent = parent;
-        this.callback = callback != null ? callback : key -> "<<" + key + ">>";
+        this.callback = Objects.nonNull(callback) ? callback : key -> "<<" + key + ">>";
     }
 
     @Override
@@ -197,7 +197,8 @@ public class DefaultI18N implements I18N, Serializable {
         if (value == null && parent != null) {
             value = parent.get(key);
         }
-        return args != null ? MessageFormat.format(value, args) : value;
+
+        return Objects.isNull(args) ? value : MessageFormat.format(value, args);
     }
 
     @Override
