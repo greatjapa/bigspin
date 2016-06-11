@@ -2,6 +2,7 @@ package com.skatepark.bigspin;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,137 +49,185 @@ public class DefaultI18N implements I18N, Serializable {
     private Function<String, String> callback;
 
     /**
-     * Constructs an {@link I18N} object with the file content.
+     * Constructs an {@link I18N} object with file content.
      *
      * @param filePath path to file.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(String filePath) throws IOException {
+    public DefaultI18N(String filePath) {
         this(filePath, null, null);
     }
 
     /**
-     * Constructs an {@link I18N} object with the file content.
+     * Constructs an {@link I18N} object with file content.
      *
      * @param filePath path to file.
      * @param parent   parent.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(String filePath, I18N parent) throws IOException {
+    public DefaultI18N(String filePath, I18N parent) {
         this(filePath, parent, null);
     }
 
     /**
-     * Constructs an {@link I18N} object with the file content.
+     * Constructs an {@link I18N} object with file content.
      *
      * @param filePath path to file.
      * @param parent   parent.
      * @param callback callback used to build a message not found.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(String filePath, I18N parent, Function<String, String> callback) throws IOException {
+    public DefaultI18N(String filePath, I18N parent, Function<String, String> callback) {
         this(Objects.isNull(filePath) ? null : new File(filePath), parent, callback);
     }
 
     /**
-     * Constructs an {@link I18N} object with the file content.
+     * Constructs an {@link I18N} object with file content.
      *
      * @param file file.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(File file) throws IOException {
+    public DefaultI18N(File file) {
         this(file, null);
     }
 
     /**
-     * Constructs an {@link I18N} object with the file content.
+     * Constructs an {@link I18N} object with file content.
      *
      * @param file   file.
      * @param parent parent.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(File file, I18N parent) throws IOException {
+    public DefaultI18N(File file, I18N parent) {
         this(file, parent, null);
     }
 
     /**
-     * Constructs an {@link I18N} object with the file content.
+     * Constructs an {@link I18N} object with file content.
      *
      * @param file     file.
      * @param parent   parent.
      * @param callback callback used to build a message not found.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(File file, I18N parent, Function<String, String> callback) throws IOException {
-        this(Objects.isNull(file) ? null : new FileInputStream(file), parent, callback);
+    public DefaultI18N(File file, I18N parent, Function<String, String> callback) {
+        this(toStream(file), parent, callback);
     }
 
+
     /**
-     * Constructs an {@link I18N} object with the stream content.
+     * Constructs an {@link I18N} object with stream content.
      *
      * @param stream stream.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(InputStream stream) throws IOException {
+    public DefaultI18N(InputStream stream) {
         this(stream, null);
     }
 
     /**
-     * Constructs an {@link I18N} object with the stream content.
+     * Constructs an {@link I18N} object with stream content.
      *
      * @param stream stream.
      * @param parent parent.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(InputStream stream, I18N parent) throws IOException {
+    public DefaultI18N(InputStream stream, I18N parent) {
         this(stream, parent, null);
     }
 
     /**
-     * Constructs an {@link I18N} object with the stream content.
+     * Constructs an {@link I18N} object with stream content.
      *
      * @param stream   stream.
      * @param parent   parent.
      * @param callback callback used to build a message not found.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(InputStream stream, I18N parent, Function<String, String> callback) throws IOException {
+    public DefaultI18N(InputStream stream, I18N parent, Function<String, String> callback) {
         this(Objects.isNull(stream) ? null : new InputStreamReader(stream), parent, callback);
     }
 
     /**
-     * Constructs an {@link I18N} object with the reader content.
+     * Constructs an {@link I18N} object with reader content.
      *
      * @param reader reader.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(Reader reader) throws IOException {
+    public DefaultI18N(Reader reader) {
         this(reader, null);
     }
 
     /**
-     * Constructs an {@link I18N} object with the reader content.
+     * Constructs an {@link I18N} object with reader content.
      *
      * @param reader reader.
      * @param parent parent.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(Reader reader, I18N parent) throws IOException {
+    public DefaultI18N(Reader reader, I18N parent) {
         this(reader, parent, null);
     }
 
     /**
-     * Constructs an {@link I18N} object with the reader content.
+     * Constructs an {@link I18N} object with reader content.
      *
      * @param reader   reader.
      * @param parent   parent.
      * @param callback callback used to build a message not found.
-     * @throws IOException If an input/output exception occur.
      */
-    public DefaultI18N(Reader reader, I18N parent, Function<String, String> callback) throws IOException {
-        Objects.requireNonNull(reader, "reader can't be null.");
+    public DefaultI18N(Reader reader, I18N parent, Function<String, String> callback) {
+        this(toMap(reader), parent, callback);
+    }
 
-        this.values = toMap(reader);
+    /**
+     * Constructs an {@link I18N} object with bundle content.
+     *
+     * @param bundle bundle.
+     */
+    public DefaultI18N(ResourceBundle bundle) {
+        this(bundle, null);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with bundle content.
+     *
+     * @param bundle bundle.
+     * @param parent parent.
+     */
+    public DefaultI18N(ResourceBundle bundle, I18N parent) {
+        this(bundle, parent, null);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with bundle content.
+     *
+     * @param bundle   bundle.
+     * @param parent   parent.
+     * @param callback callback used to build a message not found.
+     */
+    public DefaultI18N(ResourceBundle bundle, I18N parent, Function<String, String> callback) {
+        this(toMap(bundle), parent, callback);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with map content.
+     *
+     * @param values values.
+     */
+    public DefaultI18N(Map<String, String> values) {
+        this(values, null, null);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with map content.
+     *
+     * @param values values.
+     * @param parent parent.
+     */
+    public DefaultI18N(Map<String, String> values, I18N parent) {
+        this(values, parent, null);
+    }
+
+    /**
+     * Constructs an {@link I18N} object with map content.
+     *
+     * @param values   values.
+     * @param parent   parent.
+     * @param callback callback used to build a message not found.
+     */
+    public DefaultI18N(Map<String, String> values, I18N parent, Function<String, String> callback) {
+        Objects.requireNonNull(values, "values can't be null.");
+        this.values = values;
         this.parent = parent;
         this.callback = Objects.nonNull(callback) ? callback : key -> "<<" + key + ">>";
     }
@@ -240,13 +290,51 @@ public class DefaultI18N implements I18N, Serializable {
      *
      * @param reader reader.
      * @return map with internationalized messages.
-     * @throws IOException If an input/output exception occur.
      */
-    private Map<String, String> toMap(Reader reader) throws IOException {
-        Properties props = new Properties();
-        props.load(reader);
-        return props.entrySet().stream().collect(Collectors.toMap(
-                e -> String.valueOf(e.getKey()),
-                e -> String.valueOf(e.getValue())));
+    private static Map<String, String> toMap(Reader reader) {
+        if (Objects.isNull(reader)) {
+            return null;
+        }
+        try {
+            Properties props = new Properties();
+            props.load(reader);
+            return props.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            e -> String.valueOf(e.getKey()),
+                            e -> String.valueOf(e.getValue())));
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
+     * Read all {@link ResourceBundle} content and build a map with internationalized messages.
+     *
+     * @param bundle bundle.
+     * @return map with internationalized messages.
+     */
+    private static Map<String, String> toMap(ResourceBundle bundle) {
+        if (Objects.isNull(bundle)) {
+            return null;
+        }
+        return bundle.keySet().stream()
+                .collect(Collectors.toMap(key -> key, key -> bundle.getString(key)));
+    }
+
+    /**
+     * Convert file to input stream.
+     *
+     * @param file file.
+     * @return input stream.
+     */
+    private static InputStream toStream(File file) {
+        if (Objects.isNull(file)) {
+            return null;
+        }
+        try {
+            return new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }
