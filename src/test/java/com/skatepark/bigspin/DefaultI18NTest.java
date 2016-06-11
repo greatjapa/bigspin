@@ -170,11 +170,38 @@ public class DefaultI18NTest {
     }
 
     @Test
-    public void testStringConstructor() {
+    public void testConstructors() {
         try {
-            new DefaultI18N("target/test-classes/base_en_US.properties");
+
+            String baseFilePath = "target/test-classes/base_en_US.properties";
+            String guiFilePath = "target/test-classes/gui_en_US.properties";
+
+            I18N fromBaseFilePath = new DefaultI18N(baseFilePath);
+            I18N fromGuiFilePath = new DefaultI18N(guiFilePath, fromBaseFilePath);
+
+            I18N fromBaseFile = new DefaultI18N(new File(baseFilePath));
+            I18N fromGuiFile = new DefaultI18N(new File(guiFilePath), fromBaseFilePath);
+
+            InputStream baseStream = getClass().getClassLoader().getResourceAsStream(BASE_FILE);
+            InputStream guiStream = getClass().getClassLoader().getResourceAsStream(GUI_FILE);
+
+            I18N fromBaseStream = new DefaultI18N(baseStream);
+            I18N fromGuiStream = new DefaultI18N(guiStream, fromBaseFilePath);
+
+            Assert.assertEquals(4, fromBaseFilePath.size());
+            Assert.assertEquals(4, fromBaseFile.size());
+            Assert.assertEquals(4, fromBaseStream.size());
+
+            Assert.assertEquals(3, fromGuiFilePath.size());
+            Assert.assertEquals(3, fromGuiFile.size());
+            Assert.assertEquals(3, fromGuiStream.size());
+
+            Assert.assertEquals(6, fromGuiFilePath.total());
+            Assert.assertEquals(6, fromGuiFile.total());
+            Assert.assertEquals(6, fromGuiStream.total());
+
         } catch (IOException e) {
-           Assert.fail();
+            Assert.fail();
         }
     }
 
