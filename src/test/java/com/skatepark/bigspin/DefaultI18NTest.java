@@ -169,6 +169,15 @@ public class DefaultI18NTest {
         Assert.assertEquals("<<toggle>>", guiI18N.get("toggle"));
     }
 
+    @Test
+    public void testStringConstructor() {
+        try {
+            new DefaultI18N("target/test-classes/base_en_US.properties");
+        } catch (IOException e) {
+           Assert.fail();
+        }
+    }
+
     private I18N createI18N() {
         try {
             InputStream baseStream = getClass().getClassLoader().getResourceAsStream(BASE_FILE);
