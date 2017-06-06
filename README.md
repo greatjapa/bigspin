@@ -38,7 +38,7 @@ String okText = i18n.get("ok"); // okText = Yes
 i18n = new DefaultI18N("custom_en_US.properties", i18n);
 okText = i18n.get("ok"); // okText = Confirm 
 ```
-If your messages comes from a database instead of property files, you can make your own implementation of `I18N`. Pull request? =]
+If your messages comes from a database instead of property files, you can make your own implementation of `I18N`. Pull requests are welcome.
 
 ## License
 
