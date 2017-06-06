@@ -1,4 +1,4 @@
-package com.skatepark.bigspin;
+package skatepark.bigspin;
 
 import java.util.Set;
 
