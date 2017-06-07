@@ -7,7 +7,18 @@
 
 A compact and extensible mechanism to load/get internationalized messages for your Java Application. This library defines a common interface `I18N` and provides a default implementation based on a property file `DefaultI18N`. 
 
-#### Why should I use I18N instead of ResourceBundle?
+## Maven
+Bigspin is available at the Central Maven Repository:
+
+```xml
+<dependency>
+    <groupId>com.github.greatjapa</groupId>
+    <artifactId>bigspin</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+### Why should I use I18N instead of ResourceBundle?
 
 Most of well-known internationalization libraries are property-file based, as [ResourceBundle](https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html). However, `ResourceBundle` has some practical limitations if you need work with distributed systems.
 
@@ -20,7 +31,7 @@ Bigspin aims to solve these problems in a simple way. Here are the feature list:
 - You can define a callback to manage missing resources (ResourceBundle throws [MissingResourceException](https://docs.oracle.com/javase/8/docs/api/java/util/MissingResourceException.html) in this case)
 - DefaultI18N is Serializable;
 
-#### Examples
+### Examples
 
 Loading a local single file:
 
@@ -40,7 +51,3 @@ i18n = new DefaultI18N("custom_en_US.properties", i18n);
 okText = i18n.get("ok"); // okText = Confirm 
 ```
 If your messages comes from a database instead of property files, you can make your own implementation of `I18N`. Pull requests are welcome.
-
-## License
-
- Bigspin is released under the [MIT license](LICENSE).
