@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/greatjapa/bigspin.svg?branch=master)](https://travis-ci.org/greatjapa/bigspin)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/greatjapa/bigspin/blob/master/LICENSE)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.greatjapa/bigspin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.greatjapa/bigspin)
 [![codecov](https://codecov.io/gh/greatjapa/bigspin/branch/master/graph/badge.svg)](https://codecov.io/gh/greatjapa/bigspin)
 
 A compact and extensible mechanism to load/get internationalized messages for your Java Application. This library defines a common interface `I18N` and provides a default implementation based on a property file `DefaultI18N`. 
